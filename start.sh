@@ -18,6 +18,7 @@
 
 
 # # Source Bash Brewery
+# TODO: Consider other solutions
 # Replace with an explicit path for maximum safety. You'll need it for the shellcheck directive anyway.
 __library_directory="$( cd "${BASH_SOURCE[0]%/*}" && pwd )/library/"
 
@@ -25,8 +26,30 @@ __library_directory="$( cd "${BASH_SOURCE[0]%/*}" && pwd )/library/"
 source "${__library_directory}brewery.sh"
 
 
+# ## Source Modules
+# TODO: This needs to be replaced by something better.
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/core/determine_variables.sh
+source "${__library_directory}/core/determine_variables.sh"
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/core/formatting.sh
+source "${__library_directory}/core/formatting.sh"
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/core/logging.sh
+source "${__library_directory}/core/logging.sh"
 
-# # Source Modules
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/utility/exceptions.sh
+source "${__library_directory}/utility/exceptions.sh"
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/utility/interaction.sh
+source "${__library_directory}/utility/interaction.sh"
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/utility/runtime_information.sh
+source "${__library_directory}/utility/runtime_information.sh"
+
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/validation/validate_commands.sh
+source "${__library_directory}/validation/validate_commands.sh"
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/validation/validate_italics.sh
+source "${__library_directory}/validation/validate_italics.sh"
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/validation/validate_repositories.sh
+source "${__library_directory}/validation/validate_repositories.sh"
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/validation/validate_resources.sh
+source "${__library_directory}/validation/validate_resources.sh"
 
 
 
@@ -44,7 +67,7 @@ __time_zone="America/Denver"
 
 # ## Accent Color
 #
-# Accent color is a `tput` color command that may be used in different places in the script like in a printed header or in some logging functions.
+# Accent color is a `tput` color command that may be used in different places in the script like in a printed header or in some logging functions. This variable can be deleted.
 #
 __accent_color="$(tput setaf 38)"
 
@@ -60,3 +83,18 @@ read -r -d '' __header <<-HEADER
 88  8 .8    8.   .8 88  88    88  8 88 88  88      8888  8888    88   88 88    88
 888P' 88    88 888  88  88    888P' 88  88 8888     88    88     8888 88  88   88
 HEADER
+
+
+
+# # Bootstrap
+bootstrap
+
+
+# # Your Code
+
+	# ## Testing
+	# TODO: Switch to proper testing and externalize the test option.
+	# shellcheck disable=SC1090
+	source "$( cd "${BASH_SOURCE[0]%/*}" && pwd )/test/test.sh" \
+		|| warning "Could not source test.sh"
+	temp_test
