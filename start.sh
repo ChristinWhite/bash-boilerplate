@@ -17,53 +17,24 @@
 
 
 
-# # Source Bash Brewery
-# TODO: Consider other solutions
-# Replace with an explicit path for maximum safety. You'll need it for the shellcheck directive anyway.
-__library_directory="$( cd "${BASH_SOURCE[0]%/*}" && pwd )/library/"
-
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/brewery.sh
-source "${__library_directory}brewery.sh"
-
-
-# ## Source Modules
-
-
-# TODO: This needs to be replaced by something better.
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/core/determine_variables.sh
-source "${__library_directory}/core/determine_variables.sh"
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/core/formatting.sh
-source "${__library_directory}/core/formatting.sh"
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/core/logging.sh
-source "${__library_directory}/core/logging.sh"
-
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/utility/exceptions.sh
-source "${__library_directory}/utility/exceptions.sh"
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/utility/interaction.sh
-source "${__library_directory}/utility/interaction.sh"
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/utility/runtime_information.sh
-source "${__library_directory}/utility/runtime_information.sh"
-
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/validation/validate_commands.sh
-source "${__library_directory}/validation/validate_commands.sh"
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/validation/validate_italics.sh
-source "${__library_directory}/validation/validate_italics.sh"
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/validation/validate_repositories.sh
-source "${__library_directory}/validation/validate_repositories.sh"
-# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/validation/validate_resources.sh
-source "${__library_directory}/validation/validate_resources.sh"
-
-
-
 # # User Variables
+
+# ## Library Path
+#
+# This is the path to the Bash Brewery /library/, we try to determine it but the safest option is to define an absolute path.
+#
+__library_path="$( cd "${BASH_SOURCE[0]%/*}" && pwd )/library/"
+
 
 # ## Time Zone
 #
 # Set the time zone to be used for dates and times in logging functions. You have three options:
+#
 # 1. Leave undefined and UTC times will be used.
 # 2. Use local time by setting the value to `local`, this will use the default option used with the date command, if your `$TZ` environment variable is set it will be used.
 # 3. Set a specific time zone in the same format you would use to set `$TZ`. See https://www.cyberciti.biz/faq/linux-unix-set-tz-environment-variable/
 #
+# shellcheck disable=SC2034
 __time_zone="America/Denver"
 
 
@@ -71,6 +42,7 @@ __time_zone="America/Denver"
 #
 # Accent color is a `tput` color command that may be used in different places in the script like in a printed header or in some logging functions. This variable can be deleted.
 #
+# shellcheck disable=SC2034
 __accent_color="$(tput setaf 130)"
 
 
@@ -89,6 +61,8 @@ HEADER
 
 
 # # Brew (Initialize) Library
+# shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/brewery.sh
+source "${__library_path}brewery.sh"
 Library::Brew
 
 

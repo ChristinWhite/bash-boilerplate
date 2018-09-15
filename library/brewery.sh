@@ -79,8 +79,73 @@ done
 
 
 
+# # Library Functions
+
+# ## Library::Import()
+#
+# Takes a set of space deliniated paths, loops through them individually and passes them to Library::ImportPath to source.
+#
+# Usage:
+# `Library::Import core/determine_variables core/formatting utility/exceptions`
+#
+# Paramaters:
+# - `$1...`: `$path` - path - required - The relative path from /library/ to a file to source. Accepts multiple paths.
+#
+Library::Import() {
+	if [[ "${1}" ]]; then
+		local paths="${*}"
+	else
+		Library::brew_Emergency "No paths specified to import"
+	fi
+
+	# Double check that __library_path is valid and readable.
+	if ! [[ -a "${__library_path}" ]]; then
+		Library::brew_Emergency "Library path (${__library_path}) is not valid."
+	elif ! [[ -r "${__library_path}" ]]; then
+		Library::brew_Emergency "Library path (${__library_path}) is not readable."
+	fi
+
+	local path
+	for path in ${paths}; do
+		local full_path="${__library_path}${path}.sh"
+		if ! [[ -a "${full_path}" ]]; then
+			Library::brew_Emergency "Script path (${path}.sh) is not valid."
+		elif ! [[ -r "${full_path}" ]]; then
+			Library::brew_Emergency "Script path (${path}.sh) is not readable."
+		fi
+
+		# shellcheck disable=SC1090
+		source "${full_path}" \
+			|| Library::brew_Emergency "Unable to load /${path}"
+	done
+}
 
 
+# ## Library::Brew_Emergency()
+#
+# This is a simplified version of `emergency` so that we can print an semi-consistent error even if we can't load `core/logging`
+#
+# Paramaters:
+# - `$1`: `$message` - message - required - Text of message to print and log.
+#
+Library::brew_Emergency() {
+	if [[ "${1}" ]]; then
+		local message="${1}"
+	else
+		Library::Brew_Emergency "Unknown Library Error."
+	fi
+
+	local formatting_level
+	formatting_level="$(tput rev)"
+	local formatting_date
+	formatting_date="$(tput bold)"
+	local formatting_reset
+	formatting_reset="$(tput sgr0)"
+
+	printf "%s%s%s\\n" "${formatting_date}" "$(date -u +"%Y-%m-%d %H:%M %Z")" "${formatting_reset}" 1>&2
+	printf "%s %s[emergency]%s %s Exiting.\\n" "$(date -u +"%H:%M:%S")" "${formatting_level}" "${formatting_reset}" "${message}" 1>&2
+	exit 1
+}
 
 
 # ## Library::Brew()
@@ -96,6 +161,12 @@ done
 # - `__validate_italics`:           Make sure we can format italics, if not print a debug message if log-level is sufficiently high enough.
 #
 Library::Brew() {
+
+	# ## Import Required Components
+	# TODO: Reduce this once you've added imports to functions
+	Library::Import core/determine_variables core/formatting core/logging
+	Library::Import utility/exceptions utility/interaction utility/runtime_information
+	Library::Import validation/validate_commands validation/validate_italics validation/validate_repositories validation/validate_resources
 
 	# ## Runtime
 	# Get magic script variables.
