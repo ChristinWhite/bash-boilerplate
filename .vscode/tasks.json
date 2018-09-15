@@ -6,7 +6,7 @@
 		{
 			"label"  : "Default",
 			"type"   : "shell",
-			"command": "./start.sh",
+			"command": "./start.sh --log-level 7",
 			"group"  : {
 				"kind"     : "test",
 				"isDefault": true

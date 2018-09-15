@@ -27,6 +27,8 @@ source "${__library_directory}brewery.sh"
 
 
 # ## Source Modules
+
+
 # TODO: This needs to be replaced by something better.
 # shellcheck source=/Users/cwhite/Source/open-source/bash-boilerplate/library/core/determine_variables.sh
 source "${__library_directory}/core/determine_variables.sh"
@@ -69,7 +71,7 @@ __time_zone="America/Denver"
 #
 # Accent color is a `tput` color command that may be used in different places in the script like in a printed header or in some logging functions. This variable can be deleted.
 #
-__accent_color="$(tput setaf 38)"
+__accent_color="$(tput setaf 130)"
 
 
 # ## Header
@@ -77,17 +79,18 @@ __accent_color="$(tput setaf 38)"
 # If you define a text header it will be printed at the beginning of your script, if you do not want to use one delete this definition.
 #
 read -r -d '' __header <<-HEADER
-888o.    88     888 88  88    888o. 888o.  8888 88            88 8888 888o. 88    88
-88  8   8  8   8.   88  88    88  8 88  8  88    88    88    88  88   88  8  88..88
-8888'  o8oo8o   88  88oo88    8888' 8888'  88oo   88  8888  88   88oo 8888'   '88'
-88  8 .8    8.   .8 88  88    88  8 88 88  88      8888  8888    88   88 88    88
-888P' 88    88 888  88  88    888P' 88  88 8888     88    88     8888 88  88   88
+888o.    88     888 88  88    888o. 888o.  8888 88            88 8888 888o. 88    88 \\\\-----//
+88  8   8  8   8.   88  88    88  8 88  8  88    88    88    88  88   88  8  88..88   \\\\___//
+8888'  o8oo8o   88  88oo88    8888' 8888'  88oo   88  8888  88   88oo 8888'   '88'     ))=((
+88  8 .8    8.   .8 88  88    88  8 88 88  88      8888  8888    88   88 88    88     //---\\\\
+888P' 88    88 888  88  88    888P' 88  88 8888     88    88     8888 88  88   88    ((_____))
 HEADER
 
 
 
-# # Bootstrap
-bootstrap
+# # Brew (Initialize) Library
+Library::Brew
+
 
 
 # # Your Code
@@ -95,6 +98,8 @@ bootstrap
 	# ## Testing
 	# TODO: Switch to proper testing and externalize the test option.
 	# shellcheck disable=SC1090
-	source "$( cd "${BASH_SOURCE[0]%/*}" && pwd )/test/test.sh" \
-		|| warning "Could not source test.sh"
-	temp_test
+	# source "$( cd "${BASH_SOURCE[0]%/*}" && pwd )/test/test.sh" \
+	# 	|| warning "Could not source test.sh"
+	# temp_test
+
+debug "Final line of script"

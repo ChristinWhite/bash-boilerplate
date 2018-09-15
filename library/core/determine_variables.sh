@@ -2,7 +2,7 @@
 
 # # __determine_script_variables()
 #
-# Automatically set magic variables as much as possible.
+# Automatically set as many magic variables as possible.
 #
 # There are circumstances where most, if not all, of these can fail and should not be depended upon.
 #

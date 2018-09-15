@@ -233,3 +233,6 @@ __print_blank_lines () {
 		printf "\\n"
 	done
 }
+
+# TODO: Print Log Level function
+# Should take a the number and match it to the actual level.
