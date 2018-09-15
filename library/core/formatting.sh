@@ -17,6 +17,8 @@
 #     - `__underline`:          write        - Format text as underlined.
 #     - `__reverse`:            write        - Reverse foreground and background colors.
 #     - `__formatting_reset`:   write        - Remove formatting and colors from text.
+#     - `__wrap_enable`:        write        - Enable wrapping output lines.
+#     - `__wrap_disable`:       write        - Disable wrapping output lines.
 # - Foreground text color
 #     - `__red`:                write        - Red foreground color.
 #     - `__green`:              write        - Green foreground color.
@@ -46,6 +48,8 @@ __formatting_variables () {
 	__underline="$(tput smul)"
 	__reverse="$(tput rev)"
 	__formatting_reset="$(tput sgr0)"
+	__wrap_enable="(tput smam)"
+	__wrap_disable="$(tput rmam)"
 
 	# Foreground color.
 	__red="$(tput setaf 1)"

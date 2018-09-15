@@ -71,9 +71,11 @@ __print_header () {
 	# Print out the header
 	__print_blank_lines 1
 	local header_line=""
+	printf "%s" "${__wrap_disable}"
 	while IFS= read -r header_line; do
 		printf "%s%s%s\\n" "${formatting:-}" "${header_line}" "${formatting_reset:-}"
 	done <<< "${header}"
+	printf "%s" "${__wrap_enable}"
 	__print_blank_lines 1
 }
 
