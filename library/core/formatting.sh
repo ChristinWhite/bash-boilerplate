@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 
-# ### __formatting_variables
+#
+# # Formatting
+# formatting.sh
+#
+# Define `tput` formatting variables.
+#
+# Created by Chris White on 8/8/2018
+# License: MIT License / https://opensource.org/licenses/MIT
+#
+# # Usage
+#
+# Execute:
+# `Library::Import core/formatting`
+#
+
+
+
+# ### Formatting::Set_Variables()
 #
 # Set helpful global typography and color variables.
 #
@@ -40,7 +57,8 @@
 # - `__accent_color`:           read / write - Defaults to a light blue color if otherwise not set.
 #
 # shellcheck disable=SC2034
-__formatting_variables () {
+Formatting::Set_Variables() {
+
 	# Typography.
 	__bold="$(tput bold)"
 	__italic_start="$(tput sitm)"
@@ -73,4 +91,10 @@ __formatting_variables () {
 
 	# If __accent_color is not assigned give it a default light blue color.
 	[[ "${__accent_color:=$(tput setaf 38)}" ]]
+
 }
+
+
+
+# # Execute on Import
+Formatting::Set_Variables
