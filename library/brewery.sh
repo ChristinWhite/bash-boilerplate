@@ -18,7 +18,7 @@
 
 
 # # Run Options
-# NOTE: I've decided to omit `set -o errexit` and `set -o nounfail` and instead try to write error checking in code with an containable `trap ERR` fallback. More info:
+# NOTE: I've decided to omit `set -o errexit` and `set -o nounset` and instead try to write error checking inline with an `trap ERR` fallback. More info:
 # - http://mywiki.wooledge.org/BashFAQ/105
 # - http://mywiki.wooledge.org/BashFAQ/112
 set -o pipefail         # Pipelines will return the value of the last command to exit non-zero.
@@ -51,7 +51,7 @@ while :; do
 			shift
 			;;
 		-l | --log-level)
-			if [[ "${2}" == *[1-7]* ]]; then
+			if [[ "${2:-}" == *[1-7]* ]]; then
 				LOG_LEVEL="$2"
 				shift 2
 			else
@@ -83,68 +83,88 @@ done
 
 # ## Library::Import()
 #
-# Takes a set of space deliniated paths, loops through them individually and passes them to Library::ImportPath to source.
+# Takes a set of space deliniated paths relative to the Library directory and without a `.sh` extension and sources them.
 #
 # Usage:
 # `Library::Import core/determine_variables core/formatting utility/exceptions`
 #
 # Paramaters:
-# - `$1...`: `$path` - path - required - The relative path from /library/ to a file to source. Accepts multiple paths.
+# - `$1...`: `$path` - path - required - The relative path from /library/ to a file without `sh` to source. Accepts multiple paths.
 #
+# Calls:
+# - `Library::Brew_Emergency`: - Checks if `emergency` is an available function and passes the message on to it, if not print a simplified version with the message.
+#
+# shellcheck disable=SC2154
 Library::Import() {
+
+	# Make sure we have at least one path in paramaters.
 	if [[ "${1}" ]]; then
 		local paths="${*}"
 	else
-		Library::brew_Emergency "No paths specified to import"
+		Library::Brew_Emergency "No paths specified to import." \
+			|| printf "[emergency]: No paths specified to import. Exiting."
 	fi
 
-	# Double check that __library_path is valid and readable.
+	# Double check that Library path is valid and readable.
 	if ! [[ -a "${__library_path}" ]]; then
-		Library::brew_Emergency "Library path (${__library_path}) is not valid."
+		Library::Brew_Emergency "Library path (${__library_path}) is not valid."
 	elif ! [[ -r "${__library_path}" ]]; then
-		Library::brew_Emergency "Library path (${__library_path}) is not readable."
+		Library::Brew_Emergency "Library path (${__library_path}) is not readable."
 	fi
 
 	local path
 	for path in ${paths}; do
 		local full_path="${__library_path}${path}.sh"
 		if ! [[ -a "${full_path}" ]]; then
-			Library::brew_Emergency "Script path (${path}.sh) is not valid."
+			Library::Brew_Emergency "Script path (${path}.sh) is not valid."
 		elif ! [[ -r "${full_path}" ]]; then
-			Library::brew_Emergency "Script path (${path}.sh) is not readable."
+			Library::Brew_Emergency "Script path (${path}.sh) is not readable."
 		fi
 
 		# shellcheck disable=SC1090
 		source "${full_path}" \
-			|| Library::brew_Emergency "Unable to load /${path}"
+			|| Library::Brew_Emergency "Unable to load /${path}"
 	done
+
 }
 
 
 # ## Library::Brew_Emergency()
 #
-# This is a simplified version of `emergency` so that we can print an semi-consistent error even if we can't load `core/logging`
+# Checks if `emergency` is an available function (logging was loaded) and passes the message on to it, if not print a simplified version with the message.
 #
 # Paramaters:
-# - `$1`: `$message` - message - required - Text of message to print and log.
+# - `$1`: `$message` - required - Text of message to print and log.
 #
-Library::brew_Emergency() {
+# Calls:
+# - `Emergency`: optional - If `emergency` can be found pass the message onto it.
+#
+Library::Brew_Emergency() {
+
 	if [[ "${1}" ]]; then
 		local message="${1}"
 	else
-		Library::Brew_Emergency "Unknown Library Error."
+		Library::Brew_Emergency "Library::Brew_Emergency was called without a paramater."
 	fi
 
-	local formatting_level
-	formatting_level="$(tput rev)"
-	local formatting_date
-	formatting_date="$(tput bold)"
-	local formatting_reset
-	formatting_reset="$(tput sgr0)"
+	# If we can't call `emergency` then print a simplified version and exit.
+	if hash "Emergency" >/dev/null 2>&1; then
+		Emergency "${message}" \
+			|| printf "[emergency] %s" "${message}"
+	else
+		local formatting_level
+		formatting_level="$(tput rev)"
 
-	printf "%s%s%s\\n" "${formatting_date}" "$(date -u +"%Y-%m-%d %H:%M %Z")" "${formatting_reset}" 1>&2
-	printf "%s %s[emergency]%s %s Exiting.\\n" "$(date -u +"%H:%M:%S")" "${formatting_level}" "${formatting_reset}" "${message}" 1>&2
-	exit 1
+		local formatting_date
+		formatting_date="$(tput bold)"
+
+		local formatting_reset
+		formatting_reset="$(tput sgr0)"
+
+		printf "\\n%s%s%s\\n" "${formatting_date}" "$(date -u +"%Y-%m-%d %H:%M %Z")" "${formatting_reset}" 1>&2
+		printf "%s %s[emergency]%s %s Exiting.\\n" "$(date -u +"%H:%M:%S")" "${formatting_level}" "${formatting_reset}" "${message}" 1>&2
+		exit 1
+	fi
 }
 
 
@@ -163,8 +183,10 @@ Library::brew_Emergency() {
 Library::Brew() {
 
 	# ## Import Required Components
+	Library::Import core/logging
+
 	# TODO: Reduce this once you've added imports to functions
-	Library::Import core/determine_variables core/formatting core/logging
+	Library::Import core/determine_variables core/formatting
 	Library::Import utility/exceptions utility/interaction utility/runtime_information
 	Library::Import validation/validate_commands validation/validate_italics validation/validate_repositories validation/validate_resources
 
