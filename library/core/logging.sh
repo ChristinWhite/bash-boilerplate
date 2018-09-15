@@ -112,7 +112,7 @@ __log () {
 	fi
 
 	# Print out date if date changed from previous log.
-	if [[ ! "${__day}" ]]; then
+	if [[ ! "${__day:-}" ]]; then
 		printf "%s%s%s\\n" "${formatting_bold}" "${date_stamp}" "${formatting_reset}" 1>&2
 	elif [[ $(date -u +"%d") != "${__day}" ]]; then
 		printf "\\n%s%s%s\\n" "${formatting_bold}" "${date_stamp}" "${formatting_reset}" 1>&2
@@ -202,7 +202,7 @@ __log () {
 # - emergency(): `exit 1`: Called for critical errors that immediately exits script.
 # - Others...:        `0`: All other functions explicitely return true.
 #
-emergency () {                                  __log emergency "${@}"; exit 1; } # Script is unusable. Execution stops.
+Emergency () {                                  __log emergency "${@}"; exit 1; } # Script is unusable. Execution stops.
 alert ()     { [[ "${LOG_LEVEL:-0}" -ge 1 ]] && __log alert "${@}"; true; }       # Action should be taken but attempting to procead.
 critical ()  { [[ "${LOG_LEVEL:-0}" -ge 2 ]] && __log critical "${@}"; true; }    # There is a significant problem that should be addressed.
 error ()     { [[ "${LOG_LEVEL:-0}" -ge 3 ]] && __log error "${@}"; true; }       # There was a problem but it wasn't critical.
