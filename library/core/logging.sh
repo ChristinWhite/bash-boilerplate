@@ -98,22 +98,24 @@ __log () {
 	fi
 
 	# Set Date & Time
+	local date_stamp
+	local time_stamp
 	if [[ "${__time_zone}" == "local" ]]; then
-		date=$(date +"%Y-%m-%d %H:%M %Z")
-		time=$(date +"%H:%M:%S")
+		date_stamp=$(date +"%Y-%m-%d %H:%M %Z")
+		time_stamp=$(date +"%H:%M:%S")
 	elif [[ "${__time_zone}" ]]; then
-		date=$(TZ="${__time_zone}" date +"%Y-%m-%d %H:%M %Z")
-		time=$(TZ="${__time_zone}" date +"%H:%M:%S")
+		date_stamp=$(TZ="${__time_zone}" date +"%Y-%m-%d %H:%M %Z")
+		time_stamp=$(TZ="${__time_zone}" date +"%H:%M:%S")
 	else
-		date=$(date -u +"%Y-%m-%d %H:%M %Z")
-		time=$(date -u +"%H:%M:%S")
+		date_stamp=$(date -u +"%Y-%m-%d %H:%M %Z")
+		time_stamp=$(date -u +"%H:%M:%S")
 	fi
 
 	# Print out date if date changed from previous log.
 	if [[ ! "${__day}" ]]; then
-		printf "%s%s%s\\n" "${formatting_bold}" "${date}" "${formatting_reset}" 1>&2
+		printf "%s%s%s\\n" "${formatting_bold}" "${date_stamp}" "${formatting_reset}" 1>&2
 	elif [[ $(date -u +"%d") != "${__day}" ]]; then
-		printf "\\n%s%s%s\\n" "${formatting_bold}" "${date}" "${formatting_reset}" 1>&2
+		printf "\\n%s%s%s\\n" "${formatting_bold}" "${date_stamp}" "${formatting_reset}" 1>&2
 	fi
 	__day=$(date -u +"%d")
 
@@ -145,14 +147,14 @@ __log () {
 				local wrap_line_number="1"
 				while IFS= read -r line; do
 					if (( wrap_line_number == 1 )); then
-						printf "%s %s[%9s]%s %s\\n" "${time}" "${formatting:-}" "${log_level}" "${formatting_reset:-}" "${line}" 1>&2
+						printf "%s %s[%9s]%s %s\\n" "${time_stamp}" "${formatting:-}" "${log_level}" "${formatting_reset:-}" "${line}" 1>&2
 						(( wrap_line_number++ ))
 					else
 						printf "%s" "${line}" | sed 's/^/                     /' 1>&2
 					fi
 				done <<< "${wrap_lines}"
 			else
-				printf "%s %s[%9s]%s %s\\n" "${time}" "${formatting:-}" "${log_level}" "${formatting_reset:-}" "${log_line}" 1>&2
+				printf "%s %s[%9s]%s %s\\n" "${time_stamp}" "${formatting:-}" "${log_level}" "${formatting_reset:-}" "${log_line}" 1>&2
 			fi
 
 			(( line_number++ ))
