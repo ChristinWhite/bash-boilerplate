@@ -23,6 +23,8 @@
 #
 # This is the path to the Bash Brewery /library/, we try to determine it but the safest option is to define an absolute path.
 #
+# Reference: http://mywiki.wooledge.org/BashFAQ/028
+#
 __library_path="$( cd "${BASH_SOURCE[0]%/*}" && pwd )/library/"
 
 
