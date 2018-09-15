@@ -103,10 +103,6 @@ __print_runtime_information() {
 	[[ "${__determine_directory:-}" ]] \
 		&& info "Directory: $__determine_directory"
 
-	# FIXME: Remove pretend day change.
-	__day="$(( __day - 1))"
-	info "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et tellus ipsum. Sed malesuada, massa nec pharetra lobortis, velit ex consequat nibh, ut tempus ex dolor ac diam. Proin faucibus lacus at pulvinar consectetur. Cras maximus dignissim arcu sit amet mollis."
-
 	if [[ ${__is_main_script:-} ]]; then
 		info "Script is being executed directly."
 	else
