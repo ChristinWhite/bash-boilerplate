@@ -48,7 +48,7 @@ __formatting_variables () {
 	__underline="$(tput smul)"
 	__reverse="$(tput rev)"
 	__formatting_reset="$(tput sgr0)"
-	__wrap_enable="(tput smam)"
+	__wrap_enable="$(tput smam)"
 	__wrap_disable="$(tput rmam)"
 
 	# Foreground color.
