@@ -4,7 +4,7 @@
 # # Formatting
 # formatting.sh
 #
-# Define `tput` formatting variables.
+# Set helpful global typography and color variables.
 #
 # Created by Chris White on 8/8/2018
 # License: MIT License / https://opensource.org/licenses/MIT
@@ -17,7 +17,14 @@
 
 
 
-# ### Formatting::Set_Variables()
+# # Imports
+Library::Import validation/validate_commands
+
+
+
+# # Functions
+
+# ## Formatting::Set_Variables()
 #
 # Set helpful global typography and color variables.
 #
@@ -95,6 +102,30 @@ Formatting::Set_Variables() {
 }
 
 
+# ## Formatting::Validate_Italics()
+#
+# A very simple function that will make sure `tput sitm` is defined and if not will let the user know their terminal is not setup for italics at the lowest logging level.
+#
+Formatting::Validate_Italics() {
+
+	# TODO: Uncomment when __validate_commands has been reviewed and refactored.
+	# __validate_commands "infocmp"
+
+	if ! infocmp "${TERM}" | grep --silent sitm; then
+		local message
+		read -r -d '' message <<-MESSAGE || true
+		Your terminal is not setup to display italic text via "tput". This is a minor formatting issue with no effect on function.
+		See: https://alexpearce.me/2014/05/italics-in-iterm2-vim-tmux/
+		MESSAGE
+
+		debug "${message}"
+	fi
+	return 0
+
+}
+
+
 
 # # Execute on Import
+Formatting::Validate_Italics
 Formatting::Set_Variables

@@ -168,6 +168,7 @@ Library::Brew_Emergency() {
 }
 
 
+
 # ## Library::Brew()
 #
 # Executes key functions to setup library, print important information and take care of any other core details.
